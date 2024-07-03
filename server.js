@@ -9,6 +9,14 @@ const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  if (req.secure) {
+    res.redirect(`http://${req.headers.host}${req.url}`);
+  } else {
+    next();
+  }
+});
+
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
