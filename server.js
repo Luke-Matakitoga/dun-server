@@ -26,7 +26,7 @@ db.connect((err) => {
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Dun API! I\'m presuming you shouldn\'t have access... :)');
+  res.send('Welcome to Dun API v2! I\'m presuming you shouldn\'t have access... :)');
 });
 
 app.get('/users', (req, res) => {
