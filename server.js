@@ -39,6 +39,17 @@ app.get('/users', (req, res) => {
   });
 });
 
+app.get('/user/:id', (req, res) => {
+  const {id} = req.params;
+  const sql = `SELECT * FROM dun_users WHERE id = '${id}'`;
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
 app.post('/users/register', (req, res) => {
     const {email, username, password} = req.body;
     if (!email || !username || !password) {
