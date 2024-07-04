@@ -9,14 +9,6 @@ const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  if (req.secure) {
-    res.redirect(`http://${req.headers.host}${req.url}`);
-  } else {
-    next();
-  }
-});
-
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -34,7 +26,7 @@ db.connect((err) => {
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Dun API v2! I\'m presuming you shouldn\'t have access... :)');
+  res.send('Welcome to Luke\'s API v2! I\'m presuming you shouldn\'t have access... :)');
 });
 
 app.get('/users', (req, res) => {
@@ -57,6 +49,32 @@ app.get('/user/:id', (req, res) => {
     res.json(results[0].username);
   });
 });
+
+app.get('/auth', (req, res)=>{
+  const {username, password} = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  bcrypt.hash(password, 10, (err, hash)=>{
+    if(err){
+      return res.status(500).json({error:err.message});
+    }
+
+    const sql = `SELECT password FROM dun_users WHERE username = ? LIMIT 1`
+    db.query(sql, [username], (err, results)=>{
+      if(err){
+        return res.status(500).json({error:err.message});
+      }
+      let resultPassword = results[0].username
+      if(resultPassword == hash){
+        res.send("Login success");
+      }else{
+        res.send("Login fail :(");
+      }
+    })
+  })
+})
 
 app.post('/users/register', (req, res) => {
     const {email, username, password} = req.body;
