@@ -51,7 +51,7 @@ app.get('/user/:id', (req, res) => {
 });
 
 app.get('/auth', (req, res)=>{
-  const {username, password} = req.params;
+  const {username, password} = req.query;
   if (!username || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
