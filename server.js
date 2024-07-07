@@ -16,11 +16,11 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-app.use((req, res, next) => {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  console.log(`User IP Address: ${ip}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+//   console.log(`User IP Address: ${ip}`);
+//   next();
+// });
 
 db.connect((err) => {
   if (err) {
@@ -31,30 +31,30 @@ db.connect((err) => {
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Luke\'s API v2! I\'m presuming you shouldn\'t have access... :)');
-});
+// app.get('/', (req, res) => {
+//   res.send('Welcome to Luke\'s API v2! I\'m presuming you shouldn\'t have access... :)');
+// });
 
-app.get('/users', (req, res) => {
-  const sql = 'SELECT * FROM dun_users';
-  db.query(sql, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
-});
+// app.get('/users', (req, res) => {
+//   const sql = 'SELECT * FROM dun_users';
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.json(results);
+//   });
+// });
 
-app.get('/user/:id', (req, res) => {
-  const {id} = req.params;
-  const sql = `SELECT id Id, email Email, username Username FROM dun_users WHERE id = '${id}'`;
-  db.query(sql, (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results[0]);
-  });
-});
+// app.get('/user/:id', (req, res) => {
+//   const {id} = req.params;
+//   const sql = `SELECT id Id, email Email, username Username FROM dun_users WHERE id = '${id}'`;
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: err.message });
+//     }
+//     res.json(results[0]);
+//   });
+// });
 
 // app.get('/auth', (req, res) => {
 //   const { username, password } = req.query;
@@ -106,25 +106,25 @@ app.get('/user/:id', (req, res) => {
 //   });
 // });
 
-app.post('/users/register', (req, res) => {
-    const {email, username, password} = req.body;
-    if (!email || !username || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
-    bcrypt.hash(password, 10, (err, hash) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+// app.post('/users/register', (req, res) => {
+//     const {email, username, password} = req.body;
+//     if (!email || !username || !password) {
+//         return res.status(400).json({ error: 'All fields are required' });
+//     }
+//     bcrypt.hash(password, 10, (err, hash) => {
+//         if (err) {
+//             return res.status(500).json({ error: err.message });
+//         }
 
-        const sql = 'INSERT INTO dun_users (email, username, password) VALUES (?, ?, ?)';
-        db.query(sql, [email, username, hash], (err, results) => {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-            res.json(results);
-        });
-    });
-});
+//         const sql = 'INSERT INTO dun_users (email, username, password) VALUES (?, ?, ?)';
+//         db.query(sql, [email, username, hash], (err, results) => {
+//             if (err) {
+//                 return res.status(500).json({ error: err.message });
+//             }
+//             res.json(results);
+//         });
+//     });
+// });
 
 // Start the server
 app.listen(port, () => {
