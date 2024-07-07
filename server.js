@@ -57,7 +57,7 @@ app.get('/user/:id', (req, res) => {
 });
 
 app.get('/auth/validate/:key', (req, res)=>{
-  const {key} = req.query;
+  const {key} = req.params;
 
   if(!key){
     return res.status(400).json({Success:false});
