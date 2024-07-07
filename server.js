@@ -63,7 +63,7 @@ app.get('/auth/validate/:key', (req, res)=>{
     return res.status(400).json({Success:false});
   }
 
-  db.query(`SELECT * FROM AuthenticationTokens WHERE key = ? AND ADDDATE(\`generated\`, INTERVAL lifetime DAY) > NOW()`, [key], (err, result)=>{
+  db.query(`SELECT * FROM AuthenticationTokens WHERE \`key\` = ? AND ADDDATE(\`generated\`, INTERVAL lifetime DAY) > NOW()`, [key], (err, result)=>{
     if(err || result.length == 0){
       return res.status(400).json({Success:false});
     }
