@@ -68,9 +68,9 @@ app.get('/auth', (req, res)=>{
       }
       let resultPassword = results[0].username
       if(resultPassword == hash){
-        res.json({"Success":true});
+        res.json({"Success":"true"});
       }else{
-        res.json({"Success":false});
+        res.json({"Success":"false"});
       }
     })
   })
