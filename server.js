@@ -16,6 +16,12 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
+app.use((req, res, next) => {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  console.log(`User IP Address: ${ip}`);
+  next();
+});
+
 db.connect((err) => {
   if (err) {
     throw err;
@@ -74,7 +80,11 @@ app.get('/auth', (req, res) => {
       }
 
       if (isMatch) {
-        res.json({ Success: true });
+        const key = "the_key";
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        const authSql = `INSERT INTO AuthenticationTokens (key, user_id, ip_address) VALUES (?,?,?)`;
+        db.query(sql, [key,results[0].id], ip);
+        res.json({ Success: true, AuthenticationKey:key });
       } else {
         res.json({ Success: false });
       }
