@@ -86,7 +86,7 @@ app.get('/auth', (req, res) => {
             return res.status(500).json({error:err});
           }
           if(existingAuth){
-            return res.json({ Success: true, AuthenticationKey:key });
+            return res.json({ Success: true, AuthenticationKey:existingAuth[0].key });
           }else{
             const key = "the_key";
             const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
