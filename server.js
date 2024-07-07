@@ -83,7 +83,11 @@ app.get('/auth', (req, res) => {
         const key = "the_key";
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         const authSql = `INSERT INTO AuthenticationTokens (key, user_id, ip_address) VALUES (?,?,?)`;
-        db.query(sql, [key,results[0].id], ip);
+        db.query(sql, [key,results[0].id, ip], (err, results)=>{
+          if(err){
+            return res.status(500).json({error: "Auth error"});
+          }
+        });
         res.json({ Success: true, AuthenticationKey:key });
       } else {
         res.json({ Success: false });
