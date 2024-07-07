@@ -81,7 +81,7 @@ app.get('/auth', (req, res) => {
 
       if (isMatch) {
         // check for a key
-        db.query(`SELECT \`key\` FROM AuthenticationTokens WHERE user_id = ? AND DATE_ADD(generated, INTERVAL lifetime DAY) > NOW()`, [results[0].id], (err, existingAuth)=>{
+        db.query(`SELECT \`key\` FROM AuthenticationTokens WHERE user_id = ? AND ADDDATE(generated, INTERVAL lifetime DAY) > NOW()`, [results[0].id], (err, existingAuth)=>{
           if(err){
             return res.status(500).json({error:err});
           }
