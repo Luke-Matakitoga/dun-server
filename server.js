@@ -3,6 +3,7 @@ const mysql = require('mysql');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const app = express();
 const port = 3000;
@@ -15,6 +16,10 @@ const db = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME
 });
+
+function generateRandomKey(length) {
+  return crypto.randomBytes(length).toString('hex');
+}
 
 app.use((req, res, next) => {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -103,7 +108,7 @@ app.get('/auth', (req, res) => {
           if(existingAuth.length > 0){
             return res.json({ Success: true, AuthenticationKey:existingAuth[0].key });
           }else{
-            const key = "the_key";
+            const key = generateRandomKey(30);
             const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const authSql = `INSERT INTO AuthenticationTokens (\`key\`, user_id, ip_address) VALUES (?,?,?)`;
             db.query(authSql, [key,results[0].id, ip], (err, results)=>{
