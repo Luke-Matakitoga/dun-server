@@ -46,7 +46,7 @@ app.get('/user/:id', (req, res) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
-    res.json(results[0].username);
+    res.json(results[0]);
   });
 });
 
