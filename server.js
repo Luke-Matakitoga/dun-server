@@ -56,6 +56,21 @@ app.get('/user/:id', (req, res) => {
   });
 });
 
+app.get('/auth/validate/:key', (req, res)=>{
+  const {key} = req.query;
+
+  if(!key){
+    return res.status(400).json({Success:false});
+  }
+
+  db.query(`SELECT * FROM AuthenticationTokens WHERE key = ? AND ADDDATE(\`generated\`, INTERVAL lifetime DAY) > NOW()`, [key], (err, result)=>{
+    if(err || result.length == 0){
+      return res.status(400).json({Success:false});
+    }
+    return res.json({Success:true});
+  });
+})
+
 app.get('/auth', (req, res) => {
   const { username, password } = req.query;
   if (!username || !password) {
