@@ -90,7 +90,7 @@ app.get('/auth', (req, res) => {
           }else{
             const key = "the_key";
             const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const authSql = `INSERT INTO AuthenticationTokens (key, user_id, ip_address) VALUES (?,?,?)`;
+            const authSql = `INSERT INTO AuthenticationTokens (\`key\`, user_id, ip_address) VALUES (?,?,?)`;
             db.query(authSql, [key,results[0].id, ip], (err, results)=>{
               if(err){
                 return res.status(500).json({error: err});
