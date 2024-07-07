@@ -62,7 +62,7 @@ app.get('/auth', (req, res) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  const sql = `SELECT password FROM dun_users WHERE username = ? LIMIT 1`;
+  const sql = `SELECT id, password FROM dun_users WHERE username = ? LIMIT 1`;
   db.query(sql, [username], (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -80,15 +80,25 @@ app.get('/auth', (req, res) => {
       }
 
       if (isMatch) {
-        const key = "the_key";
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const authSql = `INSERT INTO AuthenticationTokens (key, user_id, ip_address) VALUES (?,?,?)`;
-        db.query(sql, [key,results[0].id, ip], (err, results)=>{
+        // check for a key
+        db.query(`SELECT key FROM AuthenticationTokens WHERE user_id = ? AND DATE_ADD(generated, INTERVAL lifetime DAY) > NOW()`, [results[0].id], (err, existingAuth)=>{
           if(err){
-            return res.status(500).json({error: "Auth error"});
+            return res.status(500).json({error:err});
           }
-          return res.json({ Success: true, AuthenticationKey:key });
-        });
+          if(existingAuth){
+
+          }else{
+            const key = "the_key";
+            const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            const authSql = `INSERT INTO AuthenticationTokens (key, user_id, ip_address) VALUES (?,?,?)`;
+            db.query(authSql, [key,results[0].id, ip], (err, results)=>{
+              if(err){
+                return res.status(500).json({error: err});
+              }
+              return res.json({ Success: true, AuthenticationKey:key });
+            });
+          }
+        })
       } else {
         res.json({ Success: false });
       }
