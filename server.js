@@ -87,8 +87,8 @@ app.get('/auth', (req, res) => {
           if(err){
             return res.status(500).json({error: "Auth error"});
           }
+          return res.json({ Success: true, AuthenticationKey:key });
         });
-        res.json({ Success: true, AuthenticationKey:key });
       } else {
         res.json({ Success: false });
       }
