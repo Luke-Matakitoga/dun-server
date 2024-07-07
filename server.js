@@ -41,7 +41,7 @@ app.get('/users', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
   const {id} = req.params;
-  const sql = `SELECT id, email, username FROM dun_users WHERE id = '${id}'`;
+  const sql = `SELECT id Id, email Email, username Username FROM dun_users WHERE id = '${id}'`;
   db.query(sql, (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
