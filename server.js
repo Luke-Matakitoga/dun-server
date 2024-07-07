@@ -85,7 +85,7 @@ app.get('/auth', (req, res) => {
           if(err){
             return res.status(500).json({error:err});
           }
-          if(existingAuth){
+          if(existingAuth.length > 0){
             return res.json({ Success: true, AuthenticationKey:existingAuth[0].key });
           }else{
             const key = "the_key";
