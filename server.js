@@ -50,31 +50,37 @@ app.get('/user/:id', (req, res) => {
   });
 });
 
-app.get('/auth', (req, res)=>{
-  const {username, password} = req.query;
+app.get('/auth', (req, res) => {
+  const { username, password } = req.query;
   if (!username || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  bcrypt.compare(password, storedHash, (err, isMatch) => {
-    if(err){
-      return res.status(500).json({error:err.message});
+  const sql = `SELECT password FROM dun_users WHERE username = ? LIMIT 1`;
+  db.query(sql, [username], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
     }
+    
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const storedHash = results[0].password;
+    
+    bcrypt.compare(password, storedHash, (err, isMatch) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
 
-    const sql = `SELECT password FROM dun_users WHERE username = ? LIMIT 1`
-    db.query(sql, [username], (err, results)=>{
-      if(err){
-        return res.status(500).json({error:err.message});
+      if (isMatch) {
+        res.json({ Success: true });
+      } else {
+        res.json({ Success: false });
       }
-      let resultPassword = results[0].username
-      if(resultPassword == hash){
-        res.json({"Success":true});
-      }else{
-        res.json({"Success":false});
-      }
-    })
-  })
-})
+    });
+  });
+});
 
 app.post('/users/register', (req, res) => {
     const {email, username, password} = req.body;
