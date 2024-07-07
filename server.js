@@ -61,7 +61,7 @@ app.get('/auth', (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
-
+  console.log("starting auth");
   const sql = `SELECT id, password FROM dun_users WHERE username = ? LIMIT 1`;
   db.query(sql, [username], (err, results) => {
     if (err) {
@@ -73,7 +73,7 @@ app.get('/auth', (req, res) => {
     }
     
     const storedHash = results[0].password;
-    
+    console.log("starting hash");
     bcrypt.compare(password, storedHash, (err, isMatch) => {
       if (err) {
         return res.status(500).json({ error: err.message });
