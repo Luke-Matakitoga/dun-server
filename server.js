@@ -56,7 +56,7 @@ app.get('/auth', (req, res)=>{
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  bcrypt.hash(password, 10, (err, hash)=>{
+  bcrypt.compare(password, storedHash, (err, isMatch) => {
     if(err){
       return res.status(500).json({error:err.message});
     }
