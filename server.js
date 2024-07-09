@@ -61,18 +61,19 @@ app.get('/user/:id', (req, res) => {
   });
 });
 
-app.get('/user/details', (req, res) => {
+app.get('/userdetails', (req, res) => {
   const {auth} = req.query;
-  db.query(`SELECT user_id FROM AuthenticationTokens WHERE key = ?`, [auth], (err, results)=>{
+  
+  db.query(`SELECT user_id FROM AuthenticationTokens WHERE \`key\` = ?`, [auth], (err, results)=>{
     if(err){
-      return res.status(400).json({error:err.message})
+      return res.status(400).json({error:err.message});
     }
     const sql = `SELECT id Id, email Email, username Username FROM dun_users WHERE id = ?`;
     db.query(sql, [results[0].user_id], (error, result) => {
       if (error) {
         return res.status(500).json({ error: error.message });
       }
-      res.json(results[0]);
+      return res.json(result[0]);
     });
   });
   
