@@ -61,6 +61,17 @@ app.get('/user/:id', (req, res) => {
   });
 });
 
+app.get('/user/details', (req, res) => {
+  const {auth} = req.query;
+  const sql = `SELECT id Id, email Email, username Username FROM dun_users WHERE id = '${id}'`;
+  db.query(sql, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results[0]);
+  });
+});
+
 app.get('/auth/validate/:key', (req, res)=>{
   const {key} = req.params;
 
